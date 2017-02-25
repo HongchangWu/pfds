@@ -71,7 +71,7 @@ let rec suffixes = function
   | [] -> [[]]
   | _ :: xs' as xs -> xs :: suffixes xs'
 
-(* Page 12 - Signature for sets. *)
+(** Page 12 - Signature for sets. *)
 module type Set =
   sig
     type elem
@@ -82,7 +82,7 @@ module type Set =
     val member : elem * set -> bool
   end
 
-(* Page 14 - Implementation of binary search trees as a functor. *)
+(** Page 14 - Implementation of binary search trees as a functor. *)
 module type Ordered =
   (* a totally ordered type and its comparison functions *)
   sig
@@ -93,7 +93,7 @@ module type Ordered =
     val leq : t * t -> bool
   end
 
-module UnbalancedSet (Element : Ordered) : Set =
+module UnbalancedSet (Element : Ordered) : Set with type elem = Element.t =
   struct
     type elem = Element.t
     type tree = E | T of tree * elem * tree
@@ -107,6 +107,26 @@ module UnbalancedSet (Element : Ordered) : Set =
         if Element.lt (x, y) then member (x, a)
         else if Element.lt (y, x) then member (x, b)
         else true
+
+    (** Page 14 - Exercise 2.2
+        In the worse case, [member] performs approximately [2d] comparisons,
+        where [d] is the depth of the tree. Rewrite [member] to take no
+        more than [d + 1] comparisons by keeping track of a candidate
+        element that {i might} be equal to the query element (say, the last
+        element for which [<] returned false or [<=] returned true) and
+        checking for equality only when you hit the bottom of the tree.
+     *)
+    let member (x, s) =
+      let rec go z = function
+        | E -> z
+        | T (a, y, b) ->
+          if Element.lt (x, y)
+          then go z a
+          else go (Some y) b
+      in
+      match go None s with
+      | Some y -> x = y
+      | None -> false
 
     let rec insert = function
       | (x, E) -> T (E, x, E)
