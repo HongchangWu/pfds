@@ -3,7 +3,7 @@
 module L = List
 
 (** Page 8 - Signature for stacks. *)
-module type STACK =
+module type Stack =
   sig
     type 'a stack
 
@@ -16,7 +16,7 @@ module type STACK =
   end
 
 (** Page 8 - Implementation of stacks using the built-in type of lists. *)
-module List : STACK =
+module List : Stack =
   struct
     type 'a stack = 'a list
 
@@ -29,22 +29,22 @@ module List : STACK =
   end
 
 (** Page 8 - Implementation of stacks using a custom datatype. *)
-module CustomStack : STACK =
+module CustomStack : Stack =
   struct
-    type 'a stack = NIL | CONS of 'a * 'a stack
+    type 'a stack = Nil | Cons of 'a * 'a stack
 
-    let empty = NIL
+    let empty = Nil
     let isEmpty = function
-      | NIL -> true
+      | Nil -> true
       | _ -> false
 
-    let cons (x, s) = CONS (x, s)
+    let cons (x, s) = Cons (x, s)
     let head = function
-      | NIL -> failwith "EMPTY"
-      | CONS (x, s) -> x
+      | Nil -> failwith "Empty"
+      | Cons (x, s) -> x
     let tail = function
-      | NIL -> failwith "EMPTY"
-      | CONS (x, s) -> s
+      | Nil -> failwith "Empty"
+      | Cons (x, s) -> s
   end
 
 let rec (++) xs ys =
@@ -53,7 +53,7 @@ let rec (++) xs ys =
   | x :: xs' -> x :: xs ++ ys
 
 let rec update = function
-  | ([], _, _) -> failwith "SUBSCRIPT"
+  | ([], _, _) -> failwith "Subscript"
   | (x :: xs, 0, y) -> y :: xs
   | (x :: xs, i, y) -> update (xs, i - 1, y)
 
@@ -72,7 +72,7 @@ let rec suffixes = function
   | _ :: xs' as xs -> xs :: suffixes xs'
 
 (* Page 12 - Signature for sets. *)
-module type SET =
+module type Set =
   sig
     type elem
     type set
@@ -83,7 +83,7 @@ module type SET =
   end
 
 (* Page 14 - Implementation of binary search trees as a functor. *)
-module type ORDERED =
+module type Ordered =
   (* a totally ordered type and its comparison functions *)
   sig
     type t
@@ -93,7 +93,7 @@ module type ORDERED =
     val leq : t * t -> bool
   end
 
-module UnbalancedSet (Element : ORDERED) : SET =
+module UnbalancedSet (Element : Ordered) : Set =
   struct
     type elem = Element.t
     type tree = E | T of tree * elem * tree
