@@ -118,15 +118,18 @@ module UnbalancedSet (Element : Ordered) : Set with type elem = Element.t =
      *)
     let member (x, s) =
       let rec go z = function
-        | E -> z
+        | E ->
+          begin
+            match z with
+            | Some y -> x = y
+            | None -> false
+          end
         | T (a, y, b) ->
           if Element.lt (x, y)
           then go z a
           else go (Some y) b
       in
-      match go None s with
-      | Some y -> x = y
-      | None -> false
+      go None s
 
     let rec insert = function
       | (x, E) -> T (E, x, E)
