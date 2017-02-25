@@ -134,4 +134,49 @@ module UnbalancedSet (Element : Ordered) : Set with type elem = Element.t =
         if Element.lt (x, y) then T (insert (x, a), y, b)
         else if Element.lt (y, x) then T (a, y, insert (x, b))
         else s
+
+    (** Page 15 - Exercise 2.3
+        Inserting an existing element into a binary search tree copies
+        the entire search path even though the copied nodes are indistinguishable
+        from the originals. Rewrite [insert] using exceptions to avoid
+        this copying. Establish only one handler per insertion rather
+        than one handler per iteration.
+     *)
+    let insert (x, s) =
+      let rec go = function
+        | (x, E) -> T (E, x, E)
+        | (x, T (a, y, b)) ->
+        if Element.lt (x, y) then T (insert (x, a), y, b)
+        else if Element.lt (y, x) then T (a, y, insert (x, b))
+        else failwith "Found"
+      in
+      try
+        go (x, s)
+      with Failure _ ->
+        s
+
+    (** Page 15 - Exercise 2.4
+        Combine the dieas of the previous two exercises to obtain a
+        version of [insert] that performs no necessary copying and uses
+        no more than [d + 1] comparisons
+     *)
+    let insert (x, s) =
+      let rec go z = function
+        | E ->
+          begin
+            match z with
+            | Some y when x = y ->
+              failwith "Found"
+            | _ ->
+              T (E, x, E)
+          end
+        | T (a, y, b) ->
+          if Element.lt (x, y)
+          then T (go z a, y, b)
+          else T (a, y, go (Some y) b)
+      in
+      try
+        go None s
+      with Failure _ ->
+        s
   end
