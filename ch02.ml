@@ -2,7 +2,7 @@
 
 module L = List
 
-(* Signature for stacks. *)
+(* Page 8 - Signature for stacks. *)
 module type STACK =
   sig
     type 'a stack
@@ -15,7 +15,7 @@ module type STACK =
     val tail    : 'a stack -> 'a stack
   end
 
-(* Implementation of stacks using the built-in type of lists. *)
+(* Page 8 - Implementation of stacks using the built-in type of lists. *)
 module List : STACK =
   struct
     type 'a stack = 'a list
@@ -28,7 +28,7 @@ module List : STACK =
     let tail s = L.tl s
   end
 
-(* Implementation of stacks using a custom datatype. *)
+(* Page 8 - Implementation of stacks using a custom datatype. *)
 module CustomStack : STACK =
   struct
     type 'a stack = NIL | CONS of 'a * 'a stack
@@ -57,7 +57,52 @@ let rec update = function
   | (x :: xs, 0, y) -> y :: xs
   | (x :: xs, i, y) -> update (xs, i - 1, y)
 
-(* Exercise 2.1 *)
+(* Page 11 - Exercise 2.1 *)
 let rec suffixes = function
   | [] -> [[]]
   | _ :: xs' as xs -> xs :: suffixes xs'
+
+(* Page 12 - Signature for sets. *)
+module type SET =
+  sig
+    type elem
+    type set
+
+    val empty  : set
+    val insert : elem * set -> set
+    val member : elem * set -> bool
+  end
+
+(* Page 14 - Implementation of binary search trees as a functor. *)
+module type ORDERED =
+  (* a totally ordered type and its comparison functions *)
+  sig
+    type t
+
+    val eq  : t * t -> bool
+    val lt  : t * t -> bool
+    val leq : t * t -> bool
+  end
+
+module UnbalancedSet (Element : ORDERED) : SET =
+  struct
+    type elem = Element.t
+    type tree = E | T of tree * elem * tree
+    type set = tree
+
+    let empty = E
+
+    let rec member = function
+      | (x, E) -> false
+      | (x, T (a, y, b)) ->
+        if Element.lt (x, y) then member (x, a)
+        else if Element.lt (y, x) then member (x, b)
+        else true
+
+    let rec insert = function
+      | (x, E) -> T (E, x, E)
+      | (x, (T (a, y, b) as s)) ->
+        if Element.lt (x, y) then T (insert (x, a), y, b)
+        else if Element.lt (y, x) then T (a, y, insert (x, b))
+        else s
+  end
