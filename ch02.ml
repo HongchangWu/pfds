@@ -1,8 +1,8 @@
-(* Chapter 2 - Persistence *)
+(** Chapter 2 - Persistence *)
 
 module L = List
 
-(* Page 8 - Signature for stacks. *)
+(** Page 8 - Signature for stacks. *)
 module type STACK =
   sig
     type 'a stack
@@ -15,7 +15,7 @@ module type STACK =
     val tail    : 'a stack -> 'a stack
   end
 
-(* Page 8 - Implementation of stacks using the built-in type of lists. *)
+(** Page 8 - Implementation of stacks using the built-in type of lists. *)
 module List : STACK =
   struct
     type 'a stack = 'a list
@@ -28,7 +28,7 @@ module List : STACK =
     let tail s = L.tl s
   end
 
-(* Page 8 - Implementation of stacks using a custom datatype. *)
+(** Page 8 - Implementation of stacks using a custom datatype. *)
 module CustomStack : STACK =
   struct
     type 'a stack = NIL | CONS of 'a * 'a stack
@@ -57,7 +57,16 @@ let rec update = function
   | (x :: xs, 0, y) -> y :: xs
   | (x :: xs, i, y) -> update (xs, i - 1, y)
 
-(* Page 11 - Exercise 2.1 *)
+(** Page 11 - Exercise 2.1
+    Write a function suffixes of type ['a list -> 'a list list] that
+    takes a list [xs] and returns a list of all the suffixes of [xs]
+    in decreasing order of length. For example,
+    [{
+      suffixes [1;2;3;4] = [[1;2;3;4]; [2;3;4]; [3;4]; [4]; []]
+    }]
+    Show that the resulting list of suffixes can be generated in [O(n)]
+    time and represented in [O(n)] space.
+ *)
 let rec suffixes = function
   | [] -> [[]]
   | _ :: xs' as xs -> xs :: suffixes xs'
