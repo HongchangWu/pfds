@@ -159,7 +159,7 @@ module UnbalancedSet (Element : Ordered) : Set with type elem = Element.t =
         s
 
     (** Page 15 - Exercise 2.4
-        Combine the dieas of the previous two exercises to obtain a
+        Combine the ideas of the previous two exercises to obtain a
         version of [insert] that performs no necessary copying and uses
         no more than [d + 1] comparisons
      *)
