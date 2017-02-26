@@ -241,7 +241,7 @@ module type FiniteMap =
     val lookup : key * 'a map -> 'a (* raise Not_found if key is not found *)
   end
 
-module UnbalancedMap (Key : Ordered) : FiniteMap =
+module UnbalancedMap (Key : Ordered) : FiniteMap with type key = Key.t =
   struct
     type key = Key.t
     type 'a tree = E | T of 'a tree * (key * 'a) * 'a tree
