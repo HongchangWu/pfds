@@ -251,7 +251,7 @@ module UnbalancedMap (Key : Ordered) : FiniteMap =
 
     let rec bind = function
       | (k, x, E) -> T (E, (k, x), E)
-      | (k, x, (T (a, (k', y), b) as s)) ->
+      | (k, x, T (a, (k', y), b)) ->
         if Key.lt (k, k') then T (bind (k, x, a), (k', y), b)
         else if Key.lt (k', k) then T (a, (k', y), bind (k, x, b))
         else T (a, (k, x), b)
