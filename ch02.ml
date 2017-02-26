@@ -183,3 +183,44 @@ module UnbalancedSet (Element : Ordered) : Set with type elem = Element.t =
       with Failure _ ->
         s
   end
+
+(** Page 15 - Exercise 2.5
+    Sharing can also be useful within a single object, not just between
+    objects. For example, if the two subtrees of a given node are identical,
+    then they can be represented by the same tree.
+
+    (a) Using this idea, write a function [complete] of type [elem * int -> tree]
+        where [complete (x, d)] creates a complete binary tree of depth [d]
+        with [x] stored in every node. (Of course, this function makes no
+        sense for the set abstraction, but it can be useful as an auxiliary
+        function for other abstractions, such as bags.) This function should
+        run in [O(d)] tim.
+    (b) Extend this function to create balanced trees of arbitary size. These
+        trees will not always be complete binary trees, but should be as
+        balanced as possible: for any given node, the two subtrees should
+        either differ in size by at most one. This function should run in
+        [O(log n)] time. (Hint: use a helper function [create2] that, given
+        a size [m], creates a pair of trees, one of size [m] and one of size
+        [m + 1].)
+ *)
+type 'a tree = E | T of 'a tree * 'a * 'a tree
+
+let rec complete (x, d) =
+  match d with
+  | 0 -> E
+  | d ->
+    let a = complete (x, d - 1) in
+    T (a, x, a)
+
+let rec create (x, n) =
+  match n with
+  | 0 -> E
+  | n when n mod 2 <> 0 ->
+    let m = (n - 1) / 2 in
+    let a = create (x, m) in
+    T (a, x, a)
+  | n ->
+    let m = (n - 1) / 2 in
+    let a = create (x, m) in
+    let b = create (x, m + 1) in
+    T (a, x, b)
