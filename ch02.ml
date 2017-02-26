@@ -149,9 +149,9 @@ module UnbalancedSet (Element : Ordered) : Set with type elem = Element.t =
       let rec go = function
         | (x, E) -> T (E, x, E)
         | (x, T (a, y, b)) ->
-        if Element.lt (x, y) then T (insert (x, a), y, b)
-        else if Element.lt (y, x) then T (a, y, insert (x, b))
-        else failwith "Found"
+          if Element.lt (x, y) then T (insert (x, a), y, b)
+          else if Element.lt (y, x) then T (a, y, insert (x, b))
+          else failwith "Found"
       in
       try
         go (x, s)
@@ -224,3 +224,42 @@ let rec create (x, n) =
     let a = create (x, m) in
     let b = create (x, m + 1) in
     T (a, x, b)
+
+(** Page 15 - Exercise 2.6
+    Adapt the [UnbalancedSet] functor to support finite maps rather than
+    sets.
+ *)
+
+(** Page 16 - Signature for finite maps *)
+module type FiniteMap =
+  sig
+    type key
+    type 'a map
+
+    val empty  : 'a map
+    val bind   : key * 'a * 'a map -> 'a map
+    val lookup : key * 'a map -> 'a (* raise Not_found if key is not found *)
+  end
+
+module UnbalancedMap (Key : Ordered) : FiniteMap =
+  struct
+    type key = Key.t
+    type 'a tree = E | T of 'a tree * (key * 'a) * 'a tree
+    type 'a map = 'a tree
+
+    let empty = E
+
+    let rec bind = function
+      | (k, x, E) -> T (E, (k, x), E)
+      | (k, x, (T (a, (k', y), b) as s)) ->
+        if Key.lt (k, k') then T (bind (k, x, a), (k', y), b)
+        else if Key.lt (k', k) then T (a, (k', y), bind (k, x, b))
+        else T (a, (k, x), b)
+
+    let rec lookup = function
+      | (k, E) -> raise Not_found
+      | (k, T (a, (k', y), b)) ->
+        if Key.lt (k, k') then lookup (k, a)
+        else if Key.lt (k', k) then lookup (k, b)
+        else y
+  end
