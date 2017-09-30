@@ -16,3 +16,8 @@
 # Vim
 *~
 *.swp
+
+# Tags
+GPATH
+GRTAGS
+GTAGS
