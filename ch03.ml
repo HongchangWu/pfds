@@ -67,4 +67,29 @@ struct
       if Elem.leq (x, y)
       then makeT (x, a, insert (y, b))
       else makeT (y, a, insert (x, b))
+
+  (** Page 19 - Exercise 3.3
+      Implement a function [fromList] of type [Element.t list -> heap] that
+      produces a lefitst heap from an unordered list of elemetns by first converting
+      each element into a singleton heap and then mergin the heaps until only one
+      heap remains. Instead of merging the heaps in one right-to-left or left-to-right
+      pass using [foldr] or [foldl], merge the heaps in [log n] passes, where each pass
+      merges adjacent pairs of heaps. Show that [fromList] takes only [O(n)] time.
+  *)
+  let fromList : Element.t list -> heap =
+    fun xs ->
+      let rec mergeAdjacent = function
+        | [] -> []
+        | [t] -> [t]
+        | t1 :: t2 :: ts ->
+          merge (t1, t2) :: mergeAdjacent ts
+      in
+      let rec go = function
+        | [] -> failwith "Empty"
+        | [t] -> t
+        | ts -> go (mergeAdjacent ts)
+      in
+      xs
+      |> List.map (fun x -> T (1, x, E, E))
+      |> go
 end
