@@ -4,17 +4,17 @@ open Common
 
 (** Page 18 - Signature for heaps (priority queues). *)
 module type Heap =
-  sig
-    module Elem : Ordered
+sig
+  module Elem : Ordered
 
-    type heap
+  type heap
 
-    val empty     : heap
-    val isEmpty   : heap -> bool
+  val empty     : heap
+  val isEmpty   : heap -> bool
 
-    val insert    : Elem.t * heap -> heap
-    val merge     : heap * heap -> heap
+  val insert    : Elem.t * heap -> heap
+  val merge     : heap * heap -> heap
 
-    val findMin   : heap -> Elem.t (* raises Empty if heap is empty *)
-    val deleteMin : heap -> heap   (* raises Empty if heap is empty *)
-  end
+  val findMin   : heap -> Elem.t (* raises Empty if heap is empty *)
+  val deleteMin : heap -> heap   (* raises Empty if heap is empty *)
+end
