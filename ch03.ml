@@ -50,10 +50,10 @@ struct
   let insert (x, h) = merge (T (1, x, E, E), h)
 
   let findMin = function
-    | E -> failwith "Empty"
+    | E -> raise Empty
     | (T (_, x, a, b)) -> x
   let deleteMin = function
-    | E -> failwith "Empty"
+    | E -> raise Empty
     | (T (_, x, a, b)) -> merge (a, b)
 
   (** Page 19 - Exercise 3.2
@@ -85,7 +85,7 @@ struct
           merge (t1, t2) :: mergeAdjacent ts
       in
       let rec go = function
-        | [] -> failwith "Empty"
+        | [] -> raise Empty
         | [t] -> t
         | ts -> go (mergeAdjacent ts)
       in
@@ -154,10 +154,10 @@ struct
   let insert (x, h) = merge (T (1, x, E, E), h)
 
   let findMin = function
-    | E -> failwith "Empty"
+    | E -> raise Empty
     | (T (_, x, a, b)) -> x
   let deleteMin = function
-    | E -> failwith "Empty"
+    | E -> raise Empty
     | (T (_, x, a, b)) -> merge (a, b)
 end
 
@@ -194,7 +194,7 @@ struct
       else insTree (link (t1, t2), merge (ts1', ts2'))
 
   let rec removeMinTree = function
-    | [] -> failwith "Empty"
+    | [] -> raise Empty
     | t :: ts ->
       let t', ts' = removeMinTree ts in
       if Elem.leq (root t, root t') then (t, ts) else (t', t :: ts')

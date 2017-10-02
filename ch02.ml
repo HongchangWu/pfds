@@ -42,10 +42,10 @@ struct
 
   let cons (x, s) = Cons (x, s)
   let head = function
-    | Nil -> failwith "Empty"
+    | Nil -> raise Empty
     | Cons (x, s) -> x
   let tail = function
-    | Nil -> failwith "Empty"
+    | Nil -> raise Empty
     | Cons (x, s) -> s
 end
 

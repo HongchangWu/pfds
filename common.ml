@@ -1,3 +1,5 @@
+exception Empty
+
 (** Page 14 - Implementation of binary search trees as a functor. *)
 module type Ordered =
 (* a totally ordered type and its comparison functions *)
