@@ -34,6 +34,7 @@ struct
   let rank = function
     | E -> 0
     | T (r, _, _, _) -> r
+
   let makeT (x, a, b) =
     if rank a >= rank b
     then T (rank b + 1, x, a, b)
@@ -51,10 +52,10 @@ struct
 
   let findMin = function
     | E -> raise Empty
-    | (T (_, x, a, b)) -> x
+    | (T (_, x, _, _)) -> x
   let deleteMin = function
     | E -> raise Empty
-    | (T (_, x, a, b)) -> merge (a, b)
+    | (T (_, _, a, b)) -> merge (a, b)
 
   (** Page 19 - Exercise 3.2
       Define [insert] directly rather than via a call to [merge]
@@ -63,7 +64,7 @@ struct
     match t with
     | E ->
       T (1, x, E, E)
-    | T (r, y, a, b) ->
+    | T (_, y, a, b) ->
       if Elem.leq (x, y)
       then makeT (x, a, insert (y, b))
       else makeT (y, a, insert (x, b))
@@ -155,10 +156,11 @@ struct
 
   let findMin = function
     | E -> raise Empty
-    | (T (_, x, a, b)) -> x
+    | (T (_, x, _, _)) -> x
+
   let deleteMin = function
     | E -> raise Empty
-    | (T (_, x, a, b)) -> merge (a, b)
+    | (T (_, _, a, b)) -> merge (a, b)
 end
 
 (** Page 24 - Binomial heaps.
@@ -203,6 +205,6 @@ struct
     let (t, _) = removeMinTree ts in
     root t
   let deleteMin ts =
-    let Node (_, x, ts1), ts2 = removeMinTree ts in
+    let Node (_, _, ts1), ts2 = removeMinTree ts in
     merge (List.rev ts1, ts2)
 end

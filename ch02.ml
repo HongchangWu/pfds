@@ -43,21 +43,21 @@ struct
   let cons (x, s) = Cons (x, s)
   let head = function
     | Nil -> raise Empty
-    | Cons (x, s) -> x
+    | Cons (x, _) -> x
   let tail = function
     | Nil -> raise Empty
-    | Cons (x, s) -> s
+    | Cons (_, s) -> s
 end
 
 let rec (++) xs ys =
   match xs with
   | [] -> ys
-  | x :: xs' -> x :: xs ++ ys
+  | x :: xs' -> x :: xs' ++ ys
 
 let rec update = function
   | ([], _, _) -> failwith "Subscript"
-  | (x :: xs, 0, y) -> y :: xs
-  | (x :: xs, i, y) -> update (xs, i - 1, y)
+  | (_ :: xs, 0, y) -> y :: xs
+  | (_ :: xs, i, y) -> update (xs, i - 1, y)
 
 (** Page 11 - Exercise 2.1
     Write a function suffixes of type ['a list -> 'a list list] that
@@ -93,7 +93,7 @@ struct
   let empty = E
 
   let rec member = function
-    | (x, E) -> false
+    | (_, E) -> false
     | (x, T (a, y, b)) ->
       if Element.lt (x, y) then member (x, a)
       else if Element.lt (y, x) then member (x, b)
@@ -137,7 +137,7 @@ struct
       than one handler per iteration.
   *)
   let insert (x, s) =
-    let rec go = function
+    let go = function
       | (x, E) -> T (E, x, E)
       | (x, T (a, y, b)) ->
         if Element.lt (x, y) then T (insert (x, a), y, b)
@@ -248,7 +248,7 @@ struct
       else T (a, (k, x), b)
 
   let rec lookup = function
-    | (k, E) -> raise Not_found
+    | (_, E) -> raise Not_found
     | (k, T (a, (k', y), b)) ->
       if Key.lt (k, k') then lookup (k, a)
       else if Key.lt (k', k) then lookup (k, b)

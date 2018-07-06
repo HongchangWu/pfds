@@ -21,3 +21,8 @@
 GPATH
 GRTAGS
 GTAGS
+
+# jbuilder
+.merlin
+_build
+*.install
