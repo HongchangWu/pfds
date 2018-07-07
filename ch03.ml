@@ -263,7 +263,7 @@ struct
 
   (** Page 28 - Exercise 3.10
       The balance function currently performs several unnecessary tests. For example,
-      when the iins function recurses on the left child, there is no need for balance
+      when the ins function recurses on the left child, there is no need for balance
       to test for red-red violations involving the right child.
 
       (a) Split balance into two functions, lbalance and rbalance, that test for
