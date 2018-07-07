@@ -191,3 +191,43 @@ struct
     let Node (_, _, ts1), ts2 = removeMinTree ts in
     merge (List.rev ts1, ts2)
 end
+
+(** Page 28 - Leftist heaps. *)
+module RedBlackSet (Element : Ordered) : Set with type elem = Element.t =
+struct
+  type elem = Element.t
+
+  type color = R | B
+  type tree = E | T of color * tree * elem * tree
+  type set = tree
+
+  let empty = E
+
+  let rec member = function
+    | (_, E) -> false
+    | (x, T (_, a, y, b)) ->
+      if Element.lt (x, y) then member (x, a)
+      else if Element.lt (y, x) then member (x, b)
+      else true
+
+  let balance = function
+    | (B, T (R, T (R, a, x, b), y, c), z, d)
+    | (B, T (R, a, x, T (R, b, y, c)), z, d)
+    | (B, a, x, T (R, T (R, b, y, c), z, d))
+    | (B, a, x, T (R, b, y, T (R, c, z, d))) ->
+      T (R, T (B, a, x, b), y, T (B, c, z, d))
+    | (color, a, x, b) ->
+      T (color, a, x, b)
+
+  let insert (x, s) =
+    let rec ins = function
+      | E -> T (R, E, x, E)
+      | T (color, a, y, b) as s ->
+        if Element.lt (x, y) then balance (color, ins a, y, b)
+        else if Element.lt (y, x) then balance (color, a, y, ins b)
+        else s
+    in
+    match ins s with
+    | E -> E
+    | T (_, a, y, b) -> T (B, a, y, b)
+end
