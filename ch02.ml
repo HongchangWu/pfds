@@ -1,21 +1,8 @@
 (** Chapter 2 - Persistence *)
 
-open Common
+open Sig
 
 module L = List
-
-(** Page 8 - Signature for stacks. *)
-module type Stack =
-sig
-  type 'a stack
-
-  val empty   : 'a stack
-  val isEmpty : 'a stack -> bool
-
-  val cons    : 'a * 'a stack -> 'a stack
-  val head    : 'a stack -> 'a
-  val tail    : 'a stack -> 'a stack
-end
 
 (** Page 8 - Implementation of stacks using the built-in type of lists. *)
 module List : Stack =
@@ -72,17 +59,6 @@ let rec update = function
 let rec suffixes = function
   | [] -> [[]]
   | _ :: xs' as xs -> xs :: suffixes xs'
-
-(** Page 12 - Signature for sets. *)
-module type Set =
-sig
-  type elem
-  type set
-
-  val empty  : set
-  val insert : elem * set -> set
-  val member : elem * set -> bool
-end
 
 module UnbalancedSet (Element : Ordered) : Set with type elem = Element.t =
 struct
