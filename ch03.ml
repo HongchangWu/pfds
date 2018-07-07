@@ -272,7 +272,9 @@ struct
       (b) Extending the same logic one step further, one of the remaining tests on the
           grandchildren is also unnecessary. Rewrite ins so that it never tests the color
           of nodes not on the search path.
-,  *)
+  *)
+  type direction = Left | Right
+
   let lbalance = function
     | (B, T (R, T (R, a, x, b), y, c), z, d)
     | (B, T (R, a, x, T (R, b, y, c)), z, d) ->
@@ -287,16 +289,53 @@ struct
     | (color, a, x, b) ->
       T (color, a, x, b)
 
+  let llbalance = function
+    | (B, T (R, T (R, a, x, b), y, c), z, d) ->
+      T (R, T (B, a, x, b), y, T (B, c, z, d))
+    | (color, a, x, b) ->
+      T (color, a, x, b)
+
+  let lrbalance = function
+    | (B, T (R, a, x, T (R, b, y, c)), z, d) ->
+      T (R, T (B, a, x, b), y, T (B, c, z, d))
+    | (color, a, x, b) ->
+      T (color, a, x, b)
+
+  let rlbalance = function
+    | (B, a, x, T (R, T (R, b, y, c), z, d)) ->
+      T (R, T (B, a, x, b), y, T (B, c, z, d))
+    | (color, a, x, b) ->
+      T (color, a, x, b)
+
+  let rrbalance = function
+    | (B, a, x, T (R, b, y, T (R, c, z, d))) ->
+      T (R, T (B, a, x, b), y, T (B, c, z, d))
+    | (color, a, x, b) ->
+      T (color, a, x, b)
+
   let insert (x, s) =
     let rec ins = function
-      | E -> T (R, E, x, E)
+      | E -> (None, T (R, E, x, E))
       | T (color, a, y, b) as s ->
-        if Element.lt (x, y) then lbalance (color, ins a, y, b)
-        else if Element.lt (y, x) then rbalance (color, a, y, ins b)
-        else s
+        if Element.lt (x, y) then
+          let (d, a') = ins a in
+          begin
+            match d with
+            | Some Left  -> (Some Left, llbalance (color, a', y, b))
+            | Some Right -> (Some Left, lrbalance (color, a', y, b))
+            | None       -> (Some Left, lbalance  (color, a', y, b))
+          end
+        else if Element.lt (y, x) then
+          let (d, b') = ins b in
+          begin
+            match d with
+            | Some Left  -> (Some Right, rlbalance (color, a, y, b'))
+            | Some Right -> (Some Right, rrbalance (color, a, y, b'))
+            | None       -> (Some Right, rbalance  (color, a, y, b'))
+          end
+        else (None, s)
     in
     match ins s with
-    | E -> E
-    | T (_, a, y, b) -> T (B, a, y, b)
-
+    | _, E -> E
+    | _, T (_, a, y, b) -> T (B, a, y, b)
 end
