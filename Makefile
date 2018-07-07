@@ -5,3 +5,7 @@ all:
 .PHONY: clean
 clean:
 	jbuilder clean
+
+.PHONY: utop
+utop:
+	jbuilder utop
