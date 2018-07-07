@@ -146,8 +146,7 @@ struct
     | (T (_, _, a, b)) -> merge (a, b)
 end
 
-(** Page 24 - Binomial heaps.
-*)
+(** Page 24 - Binomial heaps. *)
 module BinomialHeap (Element : Ordered) : Heap with module Elem = Element =
 struct
   module Elem = Element
@@ -230,4 +229,35 @@ struct
     match ins s with
     | E -> E
     | T (_, a, y, b) -> T (B, a, y, b)
+
+  (** Page 28 - Exercise 3.9
+      Write a function fromOrdList of type elem list -> tree that converts a sorted list
+      with no duplicates into a red-black tree. Your function should run in O(n) time
+,  *)
+  let fromOrdList (xs : elem list) : tree =
+    let rec splitAt n = function
+      | xs when n <= 0 ->
+        ([], xs)
+      | [] ->
+        ([], [])
+      | x :: xs ->
+        let xs', xs'' = splitAt (n - 1) xs in
+        (x :: xs', xs'')
+    in
+    let rec go color = function
+      | [] -> E
+      | xs ->
+        match splitAt (List.length xs / 2) xs with
+        | us, [] -> (* for pattern-matching completeness, impossible in practice *)
+          go color us
+        | us, x :: vs ->
+          let color' = match color with
+            | B -> R
+            | R -> B
+          in
+          let a = go color' us in
+          let b = go color' vs in
+          T (color, a, x, b)
+    in
+    go B xs
 end
