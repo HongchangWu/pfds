@@ -260,4 +260,43 @@ struct
           T (color, a, x, b)
     in
     go B xs
+
+  (** Page 28 - Exercise 3.10
+      The balance function currently performs several unnecessary tests. For example,
+      when the iins function recurses on the left child, there is no need for balance
+      to test for red-red violations involving the right child.
+
+      (a) Split balance into two functions, lbalance and rbalance, that test for
+          violations involving the left child and right child, respectively. Replace
+          the calls to balance in ins with calls to either lbalance and rbalance.
+      (b) Extending the same logic one step further, one of the remaining tests on the
+          grandchildren is also unnecessary. Rewrite ins so that it never tests the color
+          of nodes not on the search path.
+,  *)
+  let lbalance = function
+    | (B, T (R, T (R, a, x, b), y, c), z, d)
+    | (B, T (R, a, x, T (R, b, y, c)), z, d) ->
+      T (R, T (B, a, x, b), y, T (B, c, z, d))
+    | (color, a, x, b) ->
+      T (color, a, x, b)
+
+  let rbalance = function
+    | (B, a, x, T (R, T (R, b, y, c), z, d))
+    | (B, a, x, T (R, b, y, T (R, c, z, d))) ->
+      T (R, T (B, a, x, b), y, T (B, c, z, d))
+    | (color, a, x, b) ->
+      T (color, a, x, b)
+
+  let insert (x, s) =
+    let rec ins = function
+      | E -> T (R, E, x, E)
+      | T (color, a, y, b) as s ->
+        if Element.lt (x, y) then lbalance (color, ins a, y, b)
+        else if Element.lt (y, x) then rbalance (color, a, y, ins b)
+        else s
+    in
+    match ins s with
+    | E -> E
+    | T (_, a, y, b) -> T (B, a, y, b)
+
 end
