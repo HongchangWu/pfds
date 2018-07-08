@@ -1,5 +1,7 @@
 (** Chapter 4 - Lazy Evaluation *)
 
+open Sig
+
 (** Page 36 - A small streams package. *)
 module type STREAM =
 sig
@@ -41,10 +43,30 @@ struct
       | Cons (x, s) -> reverse' s (Cons (x, lazy r))
     in
     lazy (reverse' s Nil) (* delay the evaluation of reverse', which is monolithic *)
-end
 
-(** Page 37 - Exercise 4.2
-    Implement insertion sort on streams. Show that extracting the first k elements of
-    sort xs takes only O(n*k) time, where n is the length of xs, rather than O(n^2),
-    as might be expected of insertion sort.
-*)
+  (** Page 37 - Exercise 4.2
+      Implement insertion sort on streams. Show that extracting the first k elements of
+      sort xs takes only O(n*k) time, where n is the length of xs, rather than O(n^2),
+      as might be expected of insertion sort.
+  *)
+  let insertionSort
+        (type a)
+        (module Ord : Ordered with type t = a)
+        (xs : a stream) : a stream =
+    let rec insert x ys =
+      match Lazy.force ys with
+      | Nil ->
+        lazy (Cons (x, lazy Nil))
+      | Cons (y, ys) ->
+        if Ord.lt (x, y) then
+          lazy (Cons (x, lazy (Cons (y, ys))))
+        else
+          lazy (Cons (y, insert x ys))
+    in
+    let rec insertionSort' xs =
+      match Lazy.force xs with
+      | Nil -> lazy Nil
+      | Cons (x, xs) -> insert x @@ insertionSort' xs
+    in
+    insertionSort' xs
+end
