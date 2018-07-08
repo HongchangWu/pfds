@@ -3,7 +3,7 @@
 open Sig
 
 (** Page 36 - A small streams package. *)
-module type STREAM =
+module type Stream =
 sig
   type 'a streamCell = Nil | Cons of 'a * 'a stream
   and 'a stream = 'a streamCell Lazy.t
@@ -14,7 +14,7 @@ sig
   val reverse : 'a stream -> 'a stream
 end
 
-module Stream : STREAM =
+module Stream : Stream =
 struct
   type 'a streamCell = Nil | Cons of 'a * 'a stream
   and 'a stream = 'a streamCell Lazy.t
@@ -58,7 +58,7 @@ struct
       | Nil ->
         lazy (Cons (x, lazy Nil))
       | Cons (y, ys) ->
-        if Ord.lt (x, y) then
+        if Ord.lt x y then
           lazy (Cons (x, lazy (Cons (y, ys))))
         else
           lazy (Cons (y, insert x ys))

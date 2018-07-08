@@ -12,7 +12,7 @@ struct
   let empty = []
   let isEmpty s = L.length s = 0
 
-  let cons (x, s) = x :: s
+  let cons x s = x :: s
   let head s = L.hd s
   let tail s = L.tl s
 end
@@ -27,7 +27,7 @@ struct
     | Nil -> true
     | _ -> false
 
-  let cons (x, s) = Cons (x, s)
+  let cons x s = Cons (x, s)
   let head = function
     | Nil -> raise Empty
     | Cons (x, _) -> x
@@ -71,8 +71,8 @@ struct
   let rec member = function
     | (_, E) -> false
     | (x, T (a, y, b)) ->
-      if Element.lt (x, y) then member (x, a)
-      else if Element.lt (y, x) then member (x, b)
+      if Element.lt x y then member (x, a)
+      else if Element.lt y x then member (x, b)
       else true
 
   (** Page 14 - Exercise 2.2
@@ -83,7 +83,7 @@ struct
       element for which [<] returned false or [<=] returned true) and
       checking for equality only when you hit the bottom of the tree.
   *)
-  let member (x, s) =
+  let member x s =
     let rec go z = function
       | E ->
         begin
@@ -92,17 +92,17 @@ struct
           | None -> false
         end
       | T (a, y, b) ->
-        if Element.lt (x, y)
+        if Element.lt x y
         then go z a
         else go (Some y) b
     in
     go None s
 
-  let rec insert = function
+  let rec insert x s = match (x, s) with
     | (x, E) -> T (E, x, E)
     | (x, (T (a, y, b) as s)) ->
-      if Element.lt (x, y) then T (insert (x, a), y, b)
-      else if Element.lt (y, x) then T (a, y, insert (x, b))
+      if Element.lt x y then T (insert x a, y, b)
+      else if Element.lt y x then T (a, y, insert x b)
       else s
 
   (** Page 15 - Exercise 2.3
@@ -112,12 +112,12 @@ struct
       this copying. Establish only one handler per insertion rather
       than one handler per iteration.
   *)
-  let insert (x, s) =
+  let insert x s =
     let go = function
       | (x, E) -> T (E, x, E)
       | (x, T (a, y, b)) ->
-        if Element.lt (x, y) then T (insert (x, a), y, b)
-        else if Element.lt (y, x) then T (a, y, insert (x, b))
+        if Element.lt x y then T (insert x a, y, b)
+        else if Element.lt y x then T (a, y, insert x b)
         else failwith "Found"
     in
     try
@@ -130,7 +130,7 @@ struct
       version of [insert] that performs no necessary copying and uses
       no more than [d + 1] comparisons
   *)
-  let insert (x, s) =
+  let insert x s =
     let rec go z = function
       | E ->
         begin
@@ -141,7 +141,7 @@ struct
             T (E, x, E)
         end
       | T (a, y, b) ->
-        if Element.lt (x, y)
+        if Element.lt x y
         then T (go z a, y, b)
         else T (a, y, go (Some y) b)
     in
@@ -172,24 +172,24 @@ end
 *)
 type 'a tree = E | T of 'a tree * 'a * 'a tree
 
-let rec complete (x, d) =
+let rec complete x d =
   match d with
   | 0 -> E
   | d ->
-    let a = complete (x, d - 1) in
+    let a = complete x (d - 1) in
     T (a, x, a)
 
-let rec create (x, n) =
+let rec create x n =
   match n with
   | 0 -> E
   | n when n mod 2 <> 0 ->
     let m = (n - 1) / 2 in
-    let a = create (x, m) in
+    let a = create x m in
     T (a, x, a)
   | n ->
     let m = (n - 1) / 2 in
-    let a = create (x, m) in
-    let b = create (x, m + 1) in
+    let a = create x m in
+    let b = create x (m + 1) in
     T (a, x, b)
 
 (** Page 15 - Exercise 2.6
@@ -219,14 +219,14 @@ struct
   let rec bind = function
     | (k, x, E) -> T (E, (k, x), E)
     | (k, x, T (a, (k', y), b)) ->
-      if Key.lt (k, k') then T (bind (k, x, a), (k', y), b)
-      else if Key.lt (k', k) then T (a, (k', y), bind (k, x, b))
+      if Key.lt k k' then T (bind (k, x, a), (k', y), b)
+      else if Key.lt k' k then T (a, (k', y), bind (k, x, b))
       else T (a, (k, x), b)
 
   let rec lookup = function
     | (_, E) -> raise Not_found
     | (k, T (a, (k', y), b)) ->
-      if Key.lt (k, k') then lookup (k, a)
-      else if Key.lt (k', k) then lookup (k, b)
+      if Key.lt k k' then lookup (k, a)
+      else if Key.lt k' k then lookup (k, b)
       else y
 end
