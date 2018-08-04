@@ -1,0 +1,4 @@
+(library
+ (name pfds)
+ (public_name pfds)
+ (flags (:standard -warn-error -3-32)))
