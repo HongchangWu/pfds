@@ -1,6 +1,7 @@
 exception Empty
 
-(** Page 8 - Signature for stacks. *)
+(** Page 8 - Figure 2.1.
+    Signature for stacks. *)
 module type Stack =
 sig
   type 'a stack
@@ -13,7 +14,8 @@ sig
   val tail    : 'a stack -> 'a stack
 end
 
-(** Page 12 - Signature for sets. *)
+(** Page 12 - Figure 2.7.
+    Signature for sets. *)
 module type Set =
 sig
   type elem
@@ -24,7 +26,8 @@ sig
   val member : elem -> set -> bool
 end
 
-(** Page 14 - Implementation of binary search trees as a functor. *)
+(** Page 14 - Figure 2.9.
+    Implementation of binary search trees as a functor. *)
 module type Ordered =
 (* a totally ordered type and its comparison functions *)
 sig
@@ -35,7 +38,8 @@ sig
   val leq : t -> t -> bool
 end
 
-(** Page 18 - Signature for heaps (priority queues). *)
+(** Page 18 - Figure 3.1.
+    Signature for heaps (priority queues). *)
 module type Heap =
 sig
   module Elem : Ordered
@@ -52,7 +56,8 @@ sig
   val deleteMin : heap -> heap   (* raises Empty if heap is empty *)
 end
 
-(** Page 36 - A small streams package. *)
+(** Page 36 - Figure 4.1.
+    A small streams package. *)
 module type Stream =
 sig
   type 'a streamCell = Nil | Cons of 'a * 'a stream
@@ -62,4 +67,18 @@ sig
   val take    : int -> 'a stream -> 'a stream
   val drop    : int -> 'a stream -> 'a stream
   val reverse : 'a stream -> 'a stream
+end
+
+(** Page 42 - Figure 5.1.
+    Signature for queues. *)
+module type Queue =
+sig
+  type 'a queue
+
+  val empty   : 'a queue
+  val isEmpty : 'a queue -> bool
+
+  val snoc    : 'a queue -> 'a -> 'a queue
+  val head    : 'a queue -> 'a       (* raises Empty if heap is empty *)
+  val tail    : 'a queue -> 'a queue (* raises Empty if heap is empty *)
 end
