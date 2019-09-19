@@ -2,7 +2,7 @@
 
 open Sig
 
-module Stream : Stream =
+module Stream : STREAM =
 struct
   type 'a streamCell = Nil | Cons of 'a * 'a stream
   and 'a stream = 'a streamCell Lazy.t
@@ -39,7 +39,7 @@ struct
   *)
   let insertionSort
         (type a)
-        (module Ord : Ordered with type t = a)
+        (module Ord : ORDERED with type t = a)
         (xs : a stream) : a stream =
     let rec insert x ys =
       match Lazy.force ys with

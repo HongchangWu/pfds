@@ -3,7 +3,7 @@
 open Sig
 
 (** Page 32 - Leftist heaps. *)
-module LeftistHeap (Element : Ordered) : Heap with module Elem = Element =
+module LeftistHeap (Element : ORDERED) : HEAP with module Elem = Element =
 struct
   module Elem = Element
 
@@ -83,7 +83,7 @@ end
     the leftist property with the weight-biased leftist property: the size of
     any child is at least as large as the size of its right siblings.
 *)
-module WeightLeftistHeap (Element : Ordered) : Heap with module Elem = Element =
+module WeightLeftistHeap (Element : ORDERED) : HEAP with module Elem = Element =
 struct
   module Elem = Element
 
@@ -147,7 +147,7 @@ struct
 end
 
 (** Page 24 - Binomial heaps. *)
-module BinomialHeap (Element : Ordered) : Heap with module Elem = Element =
+module BinomialHeap (Element : ORDERED) : HEAP with module Elem = Element =
 struct
   module Elem = Element
 
@@ -192,7 +192,7 @@ struct
 end
 
 (** Page 28 - Leftist heaps. *)
-module RedBlackSet (Element : Ordered) : Set with type elem = Element.t =
+module RedBlackSet (Element : ORDERED) : SET with type elem = Element.t =
 struct
   type elem = Element.t
 

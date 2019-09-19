@@ -5,7 +5,7 @@ open Sig
 module L = List
 
 (** Page 8 - Implementation of stacks using the built-in type of lists. *)
-module List : Stack =
+module List : STACK =
 struct
   type 'a stack = 'a list
 
@@ -18,7 +18,7 @@ struct
 end
 
 (** Page 8 - Implementation of stacks using a custom datatype. *)
-module CustomStack : Stack =
+module CustomStack : STACK =
 struct
   type 'a stack = Nil | Cons of 'a * 'a stack
 
@@ -60,7 +60,7 @@ let rec suffixes = function
   | [] -> [[]]
   | _ :: xs' as xs -> xs :: suffixes xs'
 
-module UnbalancedSet (Element : Ordered) : Set with type elem = Element.t =
+module UnbalancedSet (Element : ORDERED) : SET with type elem = Element.t =
 struct
   type elem = Element.t
   type tree = E | T of tree * elem * tree
@@ -208,7 +208,7 @@ sig
   val lookup : key * 'a map -> 'a (* raise Not_found if key is not found *)
 end
 
-module UnbalancedMap (Key : Ordered) : FiniteMap with type key = Key.t =
+module UnbalancedMap (Key : ORDERED) : FiniteMap with type key = Key.t =
 struct
   type key = Key.t
   type 'a tree = E | T of 'a tree * (key * 'a) * 'a tree

@@ -2,7 +2,7 @@ exception Empty
 
 (** Page 8 - Figure 2.1.
     Signature for stacks. *)
-module type Stack =
+module type STACK =
 sig
   type 'a stack
 
@@ -16,7 +16,7 @@ end
 
 (** Page 12 - Figure 2.7.
     Signature for sets. *)
-module type Set =
+module type SET =
 sig
   type elem
   type set
@@ -28,7 +28,7 @@ end
 
 (** Page 14 - Figure 2.9.
     Implementation of binary search trees as a functor. *)
-module type Ordered =
+module type ORDERED =
 (* a totally ordered type and its comparison functions *)
 sig
   type t
@@ -40,9 +40,9 @@ end
 
 (** Page 18 - Figure 3.1.
     Signature for heaps (priority queues). *)
-module type Heap =
+module type HEAP =
 sig
-  module Elem : Ordered
+  module Elem : ORDERED
 
   type heap
 
@@ -58,7 +58,7 @@ end
 
 (** Page 36 - Figure 4.1.
     A small streams package. *)
-module type Stream =
+module type STREAM =
 sig
   type 'a streamCell = Nil | Cons of 'a * 'a stream
   and 'a stream = 'a streamCell Lazy.t
@@ -71,7 +71,7 @@ end
 
 (** Page 42 - Figure 5.1.
     Signature for queues. *)
-module type Queue =
+module type QUEUE =
 sig
   type 'a queue
 

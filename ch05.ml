@@ -4,7 +4,7 @@ open Sig
 
 (** Page 43 - Figure 5.2.
     A common implementation of purely functional queues. *)
-module BatchedQueue : Queue =
+module BatchedQueue : QUEUE =
 struct
   type 'a queue = 'a list * 'a list
 
