@@ -2,18 +2,6 @@
 
 open Sig
 
-(** Page 36 - A small streams package. *)
-module type Stream =
-sig
-  type 'a streamCell = Nil | Cons of 'a * 'a stream
-  and 'a stream = 'a streamCell Lazy.t
-
-  val (++)    : 'a stream -> 'a stream -> 'a stream
-  val take    : int -> 'a stream -> 'a stream
-  val drop    : int -> 'a stream -> 'a stream
-  val reverse : 'a stream -> 'a stream
-end
-
 module Stream : Stream =
 struct
   type 'a streamCell = Nil | Cons of 'a * 'a stream

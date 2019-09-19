@@ -51,3 +51,15 @@ sig
   val findMin   : heap -> Elem.t (* raises Empty if heap is empty *)
   val deleteMin : heap -> heap   (* raises Empty if heap is empty *)
 end
+
+(** Page 36 - A small streams package. *)
+module type Stream =
+sig
+  type 'a streamCell = Nil | Cons of 'a * 'a stream
+  and 'a stream = 'a streamCell Lazy.t
+
+  val (++)    : 'a stream -> 'a stream -> 'a stream
+  val take    : int -> 'a stream -> 'a stream
+  val drop    : int -> 'a stream -> 'a stream
+  val reverse : 'a stream -> 'a stream
+end
