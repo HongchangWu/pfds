@@ -1,6 +1,6 @@
 (** Chapter 3 - Some Familiar Data Structures in a Functional Setting *)
 
-open Sig
+open Sigs
 
 (** Page 32 - Leftist heaps. *)
 module LeftistHeap (Element : ORDERED) : HEAP with module Elem = Element =

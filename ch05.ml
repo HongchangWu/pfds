@@ -1,6 +1,6 @@
 (** Chapter 5 - Fundamentals of Amortization *)
 
-open Sig
+open Sigs
 
 (** Page 43 - Figure 5.2.
     A common implementation of purely functional queues. *)

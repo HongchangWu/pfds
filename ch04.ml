@@ -1,6 +1,6 @@
 (** Chapter 4 - Lazy Evaluation *)
 
-open Sig
+open Sigs
 
 module Stream : STREAM =
 struct

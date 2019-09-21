@@ -1,6 +1,6 @@
 (** Chapter 2 - Persistence *)
 
-open Sig
+open Sigs
 
 module L = List
 
