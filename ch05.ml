@@ -39,12 +39,13 @@ module BatchedDeque : DEQUE = struct
 
   let isEmpty (f, _) = match f with [] -> true | _ -> false
 
-  let checkf (f, r) = match (f, r) with
+  let checkf (f, r) =
+    match (f, r) with
     | [], r -> (List.rev r, [])
     | f, [] -> ([], List.rev f)
     | q -> q
 
-  let cons x (f, r)   = checkf (x :: f, r)
+  let cons x (f, r) = checkf (x :: f, r)
 
   let head (f, _) = match f with [] -> raise Empty | x :: _ -> x
 
