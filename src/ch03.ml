@@ -169,11 +169,77 @@ struct
     | [ Node (_, x, _) ] -> x
     | Node (_, x, _) :: ts ->
         let x' = findMin ts in
-        min x x'
+        if Elem.leq x x' then x else x'
 
   let deleteMin ts =
     let Node (_, _, ts1), ts2 = removeMinTree ts in
     merge (List.rev ts1) ts2
+end
+
+(** Page 23 - Exercise 3.6
+    Most of the rank annotations in the representation of binomial heaps are redundant
+    because we know that the children of a node of rank r have ranks r - 1,...,0. Thus,
+    we can remove the rank annotations from each node and instead pair each tree at the
+    top-level with its rank, i.e.,
+    [{
+    type tree = Node of Element.t * tree list
+    type heap = (int * tree) list
+    }]
+    Reimplement binomial heaps with this new representation.
+*)
+module BinomialHeap (Element : ORDERED) : HEAP with module Elem = Element =
+struct
+  module Elem = Element
+
+  type tree = Node of Element.t * tree list
+
+  type heap = (int * tree) list
+
+  let empty = []
+
+  let isEmpty = function [] -> true | _ -> false
+
+  let rank (r, _) = r
+
+  let tree (_, t) = t
+
+  let root (_, Node (x, _)) = x
+
+  let link (Node (x1, c1) as t1) (Node (x2, c2) as t2) =
+    if Elem.leq x1 x2 then Node (x1, t2 :: c1) else Node (x2, t1 :: c2)
+
+  let rec insTree t1 t2 =
+    match (t1, t2) with
+    | t, [] -> [ t ]
+    | t, (t' :: ts' as ts) ->
+        if rank t < rank t' then t :: ts
+        else insTree (rank t + 1, link (tree t) (tree t')) ts'
+
+  let insert x ts = insTree (0, Node (x, [])) ts
+
+  let rec merge ts1 ts2 =
+    match (ts1, ts2) with
+    | ts1, [] -> ts1
+    | [], ts2 -> ts2
+    | (t1 :: ts1' as ts1), (t2 :: ts2' as ts2) ->
+        if rank t1 < rank t2 then t1 :: merge ts1' ts2
+        else if rank t2 < rank t1 then t2 :: merge ts1 ts2'
+        else insTree (rank t1 + 1, link (tree t1) (tree t2)) (merge ts1' ts2')
+
+  let rec removeMinTree = function
+    | [] -> raise Empty
+    | t :: ts ->
+        let t', ts' = removeMinTree ts in
+        if Elem.leq (root t) (root t') then (t, ts) else (t', t :: ts')
+
+  let findMin ts =
+    let t, _ = removeMinTree ts in
+    root t
+
+  let deleteMin ts =
+    let (_, Node (_, c1)), ts2 = removeMinTree ts in
+    let ts1 = List.mapi (fun r t -> (r, t)) (List.rev c1) in
+    merge ts1 ts2
 end
 
 (** Page 28 - Leftist heaps. *)
