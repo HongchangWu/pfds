@@ -2,7 +2,8 @@
 
 open Sigs
 
-(** Page 32 - Leftist heaps. *)
+(** Page 20 - Figure 3.2.
+    Leftist heaps. *)
 module LeftistHeap (Element : ORDERED) : HEAP with module Elem = Element =
 struct
   module Elem = Element
@@ -297,7 +298,8 @@ module ExplicitMin (H : HEAP) : HEAP with module Elem = H.Elem = struct
         NE (x, h')
 end
 
-(** Page 28 - Leftist heaps. *)
+(** Page 28 - Figure 3.6.
+    Red black sets. *)
 module RedBlackSet (Element : ORDERED) : SET with type elem = Element.t = struct
   type elem = Element.t
 
