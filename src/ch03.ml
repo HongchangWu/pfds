@@ -161,6 +161,16 @@ struct
     let t, _ = removeMinTree ts in
     root t
 
+  (** Page 23 - Exercise 3.5
+      Define findMin directly reather than via a call to removeMinTree
+  *)
+  let rec findMin = function
+    | [] -> raise Empty
+    | [ Node (_, x, _) ] -> x
+    | Node (_, x, _) :: ts ->
+        let x' = findMin ts in
+        min x x'
+
   let deleteMin ts =
     let Node (_, _, ts1), ts2 = removeMinTree ts in
     merge (List.rev ts1) ts2
@@ -227,7 +237,7 @@ module RedBlackSet (Element : ORDERED) : SET with type elem = Element.t = struct
               let color' = match color with B -> R | R -> B in
               let a = go color' us in
               let b = go color' vs in
-              T (color, a, x, b) )
+              T (color, a, x, b))
     in
     go B xs
 
