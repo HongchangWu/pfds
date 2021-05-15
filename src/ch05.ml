@@ -131,3 +131,20 @@ module SplayHeap (Element : ORDERED) : HEAP with module Elem = Element = struct
     | T (T (E, _, b), y, c) -> T (b, y, c)
     | T (T (a, x, b), y, c) -> T (deleteMin a, x, T (b, y, c))
 end
+
+(** Page 52 - Exercise 5.7
+    Write a sorting function that inserts elements into a splay tree and then performs an
+    inorder traversal of the tree, dumping the elements into a list. Show that this
+    function takes only O(n) time on an already sorted list.
+*)
+let splay_sort (type a) (module E : ORDERED with type t = a) (xs : a list) =
+  let module H = SplayHeap (E) in
+  let h = List.fold_left (Fun.flip H.insert) H.empty xs in
+  let rec to_list h =
+    if H.isEmpty h then []
+    else
+      let x = H.findMin h in
+      let h' = H.deleteMin h in
+      x :: to_list h'
+  in
+  to_list h
