@@ -188,7 +188,7 @@ end
     }]
     Reimplement binomial heaps with this new representation.
 *)
-module BinomialHeap (Element : ORDERED) : HEAP with module Elem = Element =
+module BinomialHeap' (Element : ORDERED) : HEAP with module Elem = Element =
 struct
   module Elem = Element
 

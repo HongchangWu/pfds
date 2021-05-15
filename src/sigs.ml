@@ -32,8 +32,10 @@ end
 
 (** Page 14 - Figure 2.9.
     Implementation of binary search trees as a functor. *)
-module type ORDERED = (** a totally ordered type and its comparison functions *)
+module type ORDERED =
 sig
+  (** {1 a totally ordered type and its comparison functions} *)
+
   type t
 
   val eq : t -> t -> bool
