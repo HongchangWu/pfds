@@ -39,10 +39,26 @@ module BatchedDeque : DEQUE = struct
 
   let isEmpty (f, _) = match f with [] -> true | _ -> false
 
+  let rec splitAt n xs =
+    match (n, xs) with
+    | _, [] -> ([], [])
+    | 1, x :: xs -> ([ x ], xs)
+    | n, x :: xs ->
+        let xs', ys = splitAt (n - 1) xs in
+        (x :: xs', ys)
+
+  let splitInHalf xs =
+    let n = List.length xs in
+    splitAt (n / 2) xs
+
   let checkf (f, r) =
     match (f, r) with
-    | [], r -> (List.rev r, [])
-    | f, [] -> ([], List.rev f)
+    | [], _ :: _ :: _ ->
+        let r, f = splitInHalf r in
+        (List.rev f, r)
+    | _ :: _ :: _, [] ->
+        let f, r = splitInHalf f in
+        (f, List.rev r)
     | q -> q
 
   let cons x (f, r) = checkf (x :: f, r)
