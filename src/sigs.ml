@@ -32,7 +32,7 @@ end
 
 (** Page 14 - Figure 2.9.
     Implementation of binary search trees as a functor. *)
-module type ORDERED = (* a totally ordered type and its comparison functions *)
+module type ORDERED = (** a totally ordered type and its comparison functions *)
 sig
   type t
 
@@ -58,9 +58,9 @@ module type HEAP = sig
 
   val merge : heap -> heap -> heap
 
-  val findMin : heap -> Elem.t (* raises Empty if heap is empty *)
+  val findMin : heap -> Elem.t (** @raise Empty if heap is empty *)
 
-  val deleteMin : heap -> heap (* raises Empty if heap is empty *)
+  val deleteMin : heap -> heap (** @raise Empty if heap is empty *)
 end
 
 (** Page 36 - Figure 4.1.
@@ -90,9 +90,9 @@ module type QUEUE = sig
 
   val snoc : 'a queue -> 'a -> 'a queue
 
-  val head : 'a queue -> 'a (* raises Empty if heap is empty *)
+  val head : 'a queue -> 'a (** @raise Empty if heap is empty *)
 
-  val tail : 'a queue -> 'a queue (* raises Empty if heap is empty *)
+  val tail : 'a queue -> 'a queue (** @raise Empty if heap is empty *)
 end
 
 (** Page 45 - Figure 5.3.
@@ -104,19 +104,19 @@ module type DEQUE = sig
 
   val isEmpty : 'a queue -> bool
 
-  (* insert, inspect, and remove the front element *)
+  (** {1 insert, inspect, and remove the front element} *)
 
   val cons : 'a -> 'a queue -> 'a queue
 
-  val head : 'a queue -> 'a (* raises Empty if heap is empty *)
+  val head : 'a queue -> 'a (** @raise Empty if heap is empty *)
 
-  val tail : 'a queue -> 'a queue (* raises Empty if heap is empty *)
+  val tail : 'a queue -> 'a queue (** @raise Empty if heap is empty *)
 
-  (* insert, inspect, and remove the rear element *)
+  (** {1 insert, inspect, and remove the rear element} *)
 
   val snoc : 'a queue -> 'a -> 'a queue
 
-  val last : 'a queue -> 'a (* raises Empty if heap is empty *)
+  val last : 'a queue -> 'a (** @raise Empty if heap is empty *)
 
-  val init : 'a queue -> 'a queue (* raises Empty if heap is empty *)
+  val init : 'a queue -> 'a queue (** @raise Empty if heap is empty *)
 end
