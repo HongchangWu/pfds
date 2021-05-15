@@ -162,7 +162,7 @@ struct
     root t
 
   (** Page 23 - Exercise 3.5
-      Define findMin directly reather than via a call to removeMinTree
+      Define [findMin] directly reather than via a call to [removeMinTree]
   *)
   let rec findMin = function
     | [] -> raise Empty
@@ -240,6 +240,61 @@ struct
     let (_, Node (_, c1)), ts2 = removeMinTree ts in
     let ts1 = List.mapi (fun r t -> (r, t)) (List.rev c1) in
     merge ts1 ts2
+end
+
+(** Page 23 - Exercise 3.7
+    One clear advantage of leftist heaps over binomial heaps is that [findMin] take only
+    O(1) time, rather than O(logn) time. The following functor skeleton improves the
+    running time of [findMin] to O(1) by storing the minimum element separately from the
+    rest of the healp.
+    [{
+    module ExplicitMin (H : HEAP) : HEAP with module Elem = H.Elem = struct
+      module Elem = H.Elem
+      type heap = E | NE of Elem.t * H.heap
+      ...
+    end
+    }]
+    Note that this functor is not specific to binomial heaps, but rather takes any
+    implementation of heaps as a parameter. Complete this functor so that findMin takes
+    O(1) time, and [insert], [merge], and [deleteMin] take O(logn) time (assuming that all
+    four take O(logn) time or better for the underlying implementation [H].
+*)
+module ExplicitMin (H : HEAP) : HEAP with module Elem = H.Elem = struct
+  module Elem = H.Elem
+
+  type heap = E | NE of Elem.t * H.heap
+
+  let empty = E
+
+  let isEmpty = function | E -> true | _ -> false
+
+  let insert x = function
+    | E -> NE (x, H.insert x H.empty)
+    | NE (x', h) ->
+      let x'' = if Elem.leq x x' then x else x' in
+      NE (x'', H.insert x h)
+
+  let merge em1 em2 = match (em1, em2) with
+    | E, em2 -> em2
+    | em1, E -> em1
+    | NE (x1, h1), NE (x2, h2) ->
+      let x = if Elem.leq x1 x2 then x1 else x2 in
+      let h = H.merge h1 h2 in
+      NE (x, h)
+
+  let findMin = function
+    | E -> raise Empty
+    | NE (x, _) -> x
+
+  let deleteMin = function
+    | E -> raise Empty
+    | NE (_, h) ->
+      let h' = H.deleteMin h in
+      if H.isEmpty h' then
+        E
+      else
+        let x = H.findMin h' in
+        NE (x, h')
 end
 
 (** Page 28 - Leftist heaps. *)
