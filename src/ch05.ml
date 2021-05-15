@@ -137,7 +137,16 @@ end
     inorder traversal of the tree, dumping the elements into a list. Show that this
     function takes only O(n) time on an already sorted list.
 *)
-let splay_sort (type a) (module E : ORDERED with type t = a) (xs : a list) =
+let splay_sort (type a) (xs : a list) =
+  let module E : ORDERED with type t = a = struct
+    type t = a
+
+    let leq = ( <= )
+
+    let lt = ( < )
+
+    let eq = ( = )
+  end in
   let module H = SplayHeap (E) in
   let h = List.fold_left (Fun.flip H.insert) H.empty xs in
   let rec to_list h =
