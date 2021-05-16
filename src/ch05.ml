@@ -157,3 +157,34 @@ let splay_sort (type a) (xs : a list) =
       x :: to_list h'
   in
   to_list h
+
+(** Page 54 - Figure 5.6.
+    Pairing heaps. *)
+module PairingHeap (Element : ORDERED) : HEAP with module Elem = Element =
+struct
+  module Elem = Element
+
+  type heap = E | T of Element.t * heap list
+
+  let empty = E
+
+  let isEmpty = function E -> true | _ -> false
+
+  let merge h1 h2 =
+    match (h1, h2) with
+    | h, E -> h
+    | E, h -> h
+    | (T (x, hs1) as h1), (T (y, hs2) as h2) ->
+        if Elem.leq x y then T (x, h2 :: hs1) else T (y, h1 :: hs2)
+
+  let insert x h = merge (T (x, [])) h
+
+  let rec mergePairs = function
+    | [] -> E
+    | [ h ] -> h
+    | h1 :: h2 :: hs -> merge (merge h1 h2) (mergePairs hs)
+
+  let findMin = function E -> raise Empty | T (x, _) -> x
+
+  let deleteMin = function E -> raise Empty | T (_, hs) -> mergePairs hs
+end
