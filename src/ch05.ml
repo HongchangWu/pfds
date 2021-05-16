@@ -188,3 +188,63 @@ struct
 
   let deleteMin = function E -> raise Empty | T (_, hs) -> mergePairs hs
 end
+
+
+(** Page 53 - Exercise 5.8
+    Binary trees are often more convenient than multiway trees. Fortunately, there is an
+    easy way to represent any multiway tree as a binary tree. Simply convert every
+    multiway node into a binary node whose left child represents the leftmost child of the
+    multiway node and whose right child represents the sibling to the immediate right of
+    the multiway node. If either the leftmost child or the right sibling of the multiway
+    node is missing, then the corresponding field in the binary node is empty. (Note that
+    this implies that the right child of the root is always empty in the binary
+    representation.) Applying this transformation to paring heaps yields half-ordered
+    binary trees in which the element at each node is no greater than any element in its
+    left subtree.
+
+    (a) Write a function [toBinary] that converts pairing heaps from the existing
+        representation into the type
+        [{
+        type heap = E | T of Elem.t * heap * heap
+        }]
+    (b) Reimplement pairing heaps using this new representation.
+    (c) Adapt the analysis of splay trees to prove that [deleteMin] and [merge] run in
+        O(logn) amortized time for this new representation (and hence for the old
+        representation as well). Use the same potential function as for splay trees.
+*)
+module BinTreePairingHeap(Element : ORDERED) = struct
+  module Elem = Element
+
+  type heap = E | T of Elem.t * heap * heap
+
+  let empty = E
+
+  let isEmpty = function E -> true | _ -> false
+
+  let rec link h1 h2 = match (h1, h2) with
+    | T (x, E, b), h2 -> T (x, h2, b)
+    | T (x, a, b), h2 -> T (x, E, merge (merge h2 a) b)
+    | _ -> failwith "impossible"
+
+  and merge h1 h2 = match (h1, h2) with
+    | (h, E) -> h
+    | (E, h) -> h
+    | (T (x, _,  _) as h1), (T (y, _, _) as h2) ->
+      if Elem.leq x y then
+        link h1 h2
+      else
+        link h2 h1
+
+
+  let insert x h = merge (T (x, E, E)) h
+
+
+  let findMin = function
+    | E -> raise Empty
+    | T (x, _, _) -> x
+
+  let deleteMin = function
+    | E -> raise Empty
+    | T (_, a, b) -> merge a b
+
+end
