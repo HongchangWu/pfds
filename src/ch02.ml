@@ -81,7 +81,7 @@ struct
   *)
   let member x s =
     let rec go z = function
-      | E -> ( match z with Some y -> x = y | None -> false )
+      | E -> ( match z with Some y -> x = y | None -> false)
       | T (a, y, b) -> if Element.lt x y then go z a else go (Some y) b
     in
     go None s
@@ -119,8 +119,7 @@ struct
   let insert x s =
     let rec go z = function
       | E -> (
-          match z with Some y when x = y -> failwith "Found" | _ -> T (E, x, E)
-          )
+          match z with Some y when x = y -> failwith "Found" | _ -> T (E, x, E))
       | T (a, y, b) ->
           if Element.lt x y then T (go z a, y, b) else T (a, y, go (Some y) b)
     in

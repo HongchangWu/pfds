@@ -189,7 +189,6 @@ struct
   let deleteMin = function E -> raise Empty | T (_, hs) -> mergePairs hs
 end
 
-
 (** Page 53 - Exercise 5.8
     Binary trees are often more convenient than multiway trees. Fortunately, there is an
     easy way to represent any multiway tree as a binary tree. Simply convert every
@@ -212,7 +211,7 @@ end
         O(logn) amortized time for this new representation (and hence for the old
         representation as well). Use the same potential function as for splay trees.
 *)
-module BinTreePairingHeap(Element : ORDERED) = struct
+module BinTreePairingHeap (Element : ORDERED) = struct
   module Elem = Element
 
   type heap = E | T of Elem.t * heap * heap
@@ -221,30 +220,22 @@ module BinTreePairingHeap(Element : ORDERED) = struct
 
   let isEmpty = function E -> true | _ -> false
 
-  let rec link h1 h2 = match (h1, h2) with
+  let rec link h1 h2 =
+    match (h1, h2) with
     | T (x, E, b), h2 -> T (x, h2, b)
     | T (x, a, b), h2 -> T (x, E, merge (merge h2 a) b)
     | _ -> failwith "impossible"
 
-  and merge h1 h2 = match (h1, h2) with
-    | (h, E) -> h
-    | (E, h) -> h
-    | (T (x, _,  _) as h1), (T (y, _, _) as h2) ->
-      if Elem.leq x y then
-        link h1 h2
-      else
-        link h2 h1
-
+  and merge h1 h2 =
+    match (h1, h2) with
+    | h, E -> h
+    | E, h -> h
+    | (T (x, _, _) as h1), (T (y, _, _) as h2) ->
+        if Elem.leq x y then link h1 h2 else link h2 h1
 
   let insert x h = merge (T (x, E, E)) h
 
+  let findMin = function E -> raise Empty | T (x, _, _) -> x
 
-  let findMin = function
-    | E -> raise Empty
-    | T (x, _, _) -> x
-
-  let deleteMin = function
-    | E -> raise Empty
-    | T (_, a, b) -> merge a b
-
+  let deleteMin = function E -> raise Empty | T (_, a, b) -> merge a b
 end
