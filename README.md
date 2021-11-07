@@ -6,6 +6,7 @@
 - [Chapter 3 - Some Familiar Data Structures in a Functional Setting](src/ch03.ml)
 - [Chapter 4 - Lazy Evaluation](src/ch04.ml)
 - [Chapter 5 - Fundamentals of Amortization](src/ch05.ml)
+- [Chapter 6 - Amortization and Persistence via Lazy Evaluation](src/ch06.ml)
 
 ## Build
 
